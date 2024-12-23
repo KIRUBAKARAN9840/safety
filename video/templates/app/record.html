@@ -1,0 +1,137 @@
+<title>Records</title>
+<h2>HSC Records</h2>
+<style>
+     /* General Styling */
+     body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f2f4f8; /* Soft background color */
+    }
+    
+    h2 {
+        color: #004947; /* Dark teal color */
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    /* Container Styling for the Columns */
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center the columns */
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    /* Column Styling */
+    .column {
+        flex: 1 1 calc(20% - 20px);  /* Adjust width to fit four columns */
+        margin: 10px; /* Space between columns */
+        background-color: #ffffff; /* White background for the cards */
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        text-align: center; /* Center content in each column */
+        transition: transform 0.3s, box-shadow 0.3s; /* Add transition effects */
+    }
+
+    .column:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+    }
+
+    /* Image Styling */
+    img {
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s;
+    }
+
+    img:hover {
+        transform: scale(1.05); /* Slight zoom on hover */
+    }
+
+    /* Input and Select Styling */
+    select, input[type="text"] {
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        width: 40%;
+        font-size: 14px;
+        background-color: #e9f3f0; /* Light teal background */
+        margin-top: 10px; /* Space above input/select */
+        transition: border 0.3s, background-color 0.3s;
+    }
+
+    select:focus, input[type="text"]:focus {
+        outline: none;
+        border-color: #004947; /* Dark teal border on focus */
+        background-color: #d7e9e7; /* Slightly darker teal */
+    }
+
+    /* Button Styling */
+    button {
+        padding: 10px 20px;
+        background-color: #004947; /* Dark teal background */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        font-size: 14px;
+        margin-top: 10px; /* Space above button */
+        width: 100%; /* Full width button */
+    }
+
+    button:hover {
+        background-color: #003b3b; /* Darker teal on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+    }
+
+    button:active {
+        background-color: #002828; /* Even darker on active */
+        transform: translateY(0);
+    }
+</style>
+
+<form method="POST" >
+    {% csrf_token %}
+    <div class="container">
+        {% for violator in violators %}
+        <div class="column">
+            <img src="{{ violator.image.url }}" alt="Violator image" width="100"><br>
+            
+            <label>Name:</label>
+            <input type="text" name="name_{{ violator.id }}" value="{{ violator.name }}"><br>
+            
+            <label>Action Taken:</label>
+            <select name="action_taken_{{ violator.id }}">
+                <option value="Yes" {% if violator.action_taken == 'Yes' %}selected{% endif %}>Yes</option>
+                <option value="No" {% if violator.action_taken == 'No' %}selected{% endif %}>No</option>
+            </select><br>
+            
+            <label>Identify Employee:</label>
+            <select name="identify_employee_{{ violator.id }}">
+                <option value="Yes" {% if violator.identify_employee == 'Yes' %}selected{% endif %}>Yes</option>
+                <option value="No" {% if violator.identify_employee == 'No' %}selected{% endif %}>No</option>
+            </select><br>
+            
+            <label>Counseling:</label>
+            <select name="counsling_{{ violator.id }}">
+                <option value="Yes" {% if violator.counsling == 'Yes' %}selected{% endif %}>Yes</option>
+                <option value="No" {% if violator.counsling == 'No' %}selected{% endif %}>No</option>
+            </select><br>
+            
+            <label>Reason:</label>
+            <input type="text" name="reason_{{ violator.id }}" value="{{ violator.reason }}"><br>
+            
+            <button type="submit" name="save_{{ violator.id }}">Save</button>
+        </div>
+        {% empty %}
+        <p>No violators found.</p>
+        {% endfor %}
+    </div>
+</form>

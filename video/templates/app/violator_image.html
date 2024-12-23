@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WRWS - SAFETY AUDIT</title>
+    <style>
+        .container {
+            display: flex;                 
+            flex-wrap: wrap;            
+            gap: 20px;                   
+            padding: 20px;                 
+        }
+        .violator-item {
+            flex: 1 1 calc(20% - 20px); 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+            padding: 10px;               
+            border-radius: 8px;            
+            background-color: #f9f9f9;    
+            box-sizing: border-box;  
+            background-color: #071822;
+            color:white;      
+        }
+        img {
+            max-width: 100%;               
+            height: auto;                 
+            border-radius: 8px;           
+        }
+    </style>
+</head>
+<body style="background-color: #008985;">
+    <div class="container">
+        {% for violator in violators %}
+        <div class="violator-item">
+            <h2>Compliance: {{ violator.compliance }}</h2>
+            <img
+                src="{{violator.image.url }}"
+                alt="Violator Image"
+            />
+            <p>Time: {{ violator.created }}</p>
+        </div>
+        {% empty %}
+        <p>No violators found.</p>
+        {% endfor %}
+    </div>
+    
+    <script>
+        function redirectToPage() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

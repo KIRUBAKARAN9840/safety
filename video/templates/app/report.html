@@ -1,0 +1,73 @@
+<title>Report</title>
+<h2>Violator Report</h2>
+<style>
+    table {
+        width: 90%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    table th, table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    table th {
+        background-color: #004947;
+        color: white;
+        font-weight: bold;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #e9f3f0;
+    }
+
+    table tr:hover {
+        background-color: #d7e9e7;
+    }
+
+    h2 {
+        text-align: center;
+        color: #004947;
+    }
+</style>
+
+<!-- Report Table -->
+<table>
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Action Taken</th>
+            <th>Identify Employee</th>
+            <th>Counseling</th>
+            <th>Reason</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for violator in violators %}
+        <tr>
+            <td><img src="{{ violator.image.url }}" alt="Image" width="50"></td>
+            <td>{{ violator.name }}</td>
+            <td>{{ violator.action_taken }}</td>
+            <td>{{ violator.identify_employee }}</td>
+            <td>{{ violator.counsling }}</td>
+            <td>{{ violator.reason }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No data available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Submit Button to Trigger Excel Export -->
+<form method="POST" action="{% url 'export_to_excel' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Export to Excel</button>
+</form>

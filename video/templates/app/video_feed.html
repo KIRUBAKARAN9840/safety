@@ -1,0 +1,668 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WRWS - SAFETY AUDIT</title>
+    <style>/* Reset box-sizing for all elements */
+      * {
+        box-sizing: border-box;
+      }
+      
+
+      body {
+        background-color: #071822;
+        font-family: Garamond, serif;
+        margin: 0; /* Remove default body margin */
+        padding: 0;
+      }
+      
+      .container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .row {
+        display: flex; /* Use flexbox to align columns */
+        padding: 0;
+        margin: 0;
+        width: 100%; /* Ensure row takes full width */
+      }
+      
+      .heading {
+        justify-content: space-between;
+        margin-left: 750px;
+        display: flex;
+        float: left;
+        height: auto;
+      }
+      
+      .analytics-column {
+        flex: 1; /* Allow this to take the full width based on content */
+        margin: 0;
+        padding: 0;
+        color: #008985;
+      }
+      
+      textarea {
+        background-color: rgb(232, 229, 229);
+        border-radius: 12px;
+      }
+      
+      #cameraDevice {
+        width: 30px;
+      }
+      
+      
+      .video-column {
+        flex: 3; 
+        margin: 0;
+        padding: 0;
+        color: white;
+      }
+      
+      .video-column img {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 1100px; /* Ensure the image takes full width */
+        height: 550px; /* Maintain aspect ratio */
+      }
+      
+      .button {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+      }
+      
+      h2, h4 {
+        margin: 5px;
+      }
+      
+      .button button {
+        background-color: #008985 !important;
+        border: none !important;
+        color: rgb(254, 252, 252) !important;
+        padding: 15px 32px !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        font-size: 14px !important;
+        margin: 4px 2px !important;
+        cursor: pointer !important;
+        border-radius: 12px !important;
+        transition: background-color 0.3s !important;
+        width: 120px;
+      }
+      
+      .button button:hover {
+        background-color: #004947 !important;
+      }
+      
+      #snackbar {
+        visibility: hidden; /* Hidden by default */
+        min-width: 250px; /* Minimum width */
+        margin-left: -125px; /* Center the snackbar */
+        background-color: #333; /* Background color */
+        color: #fff; /* Text color */
+        text-align: center; /* Center the text */
+        border-radius: 2px; /* Rounded corners */
+        padding: 16px; /* Padding */
+        position: fixed; /* Fixed position */
+        z-index: 1; /* Sit on top */
+        left: 50%; /* Center horizontally */
+        bottom: 30px; /* 30px from the bottom */
+        font-size: 17px; /* Font size */
+        transition: visibility 0s, opacity 0.5s linear; /* Fade in/out transition */
+        opacity: 0; /* Start invisible */
+      }
+      
+      #snackbar.show {
+        visibility: visible; /* Show the snackbar */
+        opacity: 1; /* Fully visible */
+      }
+      /* Modal styles */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1000; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+      }
+      
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+      }
+      
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .heading .green-box{
+        position: absolute;
+            top: 20px;
+            left: 94%;
+            transform: translateX(-50%);
+            padding: 25px;
+            background-color: rgb(168, 209, 142); /* Light green background */
+            /* border-radius: 5px; */
+            width: 90px;
+            z-index: -1; /* Place it behind the text */
+      }
+      .heading .wrw{
+        position: absolute;
+            top: 20px;
+            left: 94%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 20px;
+            color: rgb(104, 47, 148);
+            font-weight: 600;
+            font-family:Arial, Helvetica, sans-serif
+      }
+      .heading .service{
+        position: absolute;
+            top: 40px;
+            left: 91.5%;
+            font-size: 20px;
+            color: rgb(104, 47, 148);
+            font-weight: 600;
+
+            font-family:Arial, Helvetica, sans-serif
+      }
+      
+      
+    </style>    
+   
+  </head>
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+  <div style="background-color: #071822; font-family: Garamond, serif">
+    <div class="heading" style="color: white">
+      <h1>Safety Monitoring</h1>
+      <!-- <img
+        src="{% static 'logo.ico' %}"
+        alt="WRWS logo"
+        width="80"
+        height="40"
+        class="logo"
+        style="margin-left:400px"
+      /> -->
+        <div class="logo">
+        <div class="green-box"></div>
+        <div class="wrw">
+          WRW
+        </div>
+        <div class="service">
+          Services
+        </div>
+      </div>
+      </div>   
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="analytics-column">
+          <input
+            type="number"
+            id="cameraDevice"
+            placeholder="Device Number"
+            value="0"
+            style="border-radius: 12px"
+          />
+          <h2>Compliances</h2>
+          <!-- <label for="compliance-dropdown">Select Compliance: </label> -->
+<div class="form-inline">
+  
+  <div class="dropdown" style="position: relative; display: inline-block; width: 250px;">
+    <button class="dropdown-btn" style="background-color: rgb(254, 252, 252) !important; color: #008985 !important; padding: 7px; cursor: pointer; width: 70%; text-align: left; border-radius: 10px; position: relative;">
+    SELECT COMPLIANCE
+    <span class="dropdown-arrow" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #008985; cursor: pointer;">&#9662;</span>
+</button>
+  
+    <div class="dropdown-menu" style="display: none; position: absolute; background-color: #ffffff; min-width: 100%; box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); z-index: 1; padding: 10px; border: 1px solid #ccc; max-height: 200px; overflow-y: auto;">
+        <!-- All Checkbox options inside the dropdown -->
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Glasses" id="glasses">
+            <label class="form-check-label" for="glasses">Glasses</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Face-mask-medical" id="face-mask-medical">
+            <label class="form-check-label" for="face-mask-medical">Face-mask-medical</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Face-guard" id="face-guard">
+            <label class="form-check-label" for="face-guard">Face-guard</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Earmuffs" id="earmuffs">
+            <label class="form-check-label" for="earmuffs">Earmuffs</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Gloves" id="gloves">
+            <label class="form-check-label" for="gloves">Gloves</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Shoes" id="shoes">
+            <label class="form-check-label" for="shoes">Shoes</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Safety-vest" id="safety-vest">
+            <label class="form-check-label" for="safety-vest">Safety-vest</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Tools" id="tools">
+            <label class="form-check-label" for="tools">Tools</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Helmet" id="helmet">
+            <label class="form-check-label" for="helmet">Helmet</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Medical-suit" id="medical-suit">
+            <label class="form-check-label" for="medical-suit">Medical-suit</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="Safety-suit" id="safety-suit">
+            <label class="form-check-label" for="safety-suit">Safety-suit</label>
+        </div>
+    </div>
+    <!-- Submit Button -->
+    <button class="submit-btn" id="submit-compliance" style="background-color: #008985 !important;color: rgb(254, 252, 252) !important; border-radius: 10px;padding: 7px;">Submit</button>
+  </div>
+</div>     
+          <h2>Results</h2>
+          <textarea id="results" rows="10" cols="45" readonly></textarea>
+          <h2>Analytics</h2>
+          <textarea id="analytics" rows="10" cols="45" readonly></textarea>
+          <h2>Safety Index</h2>
+          <textarea id="safety-index" rows="3" cols="10" readonly></textarea>
+        </div>
+
+        <div class="video-column">
+          <div
+            id="videoContainer"
+            style="position: relative; width: 1100px; height: 500px"
+          >
+             
+
+            <!-- Video stream -->
+            <img
+              id="video-frame"
+              alt="Video Feed"
+              src=""
+              width="1100px"
+              height="500px"
+            />
+
+          </div>
+
+          <div class="button">
+            <button id="startButton" onclick="startStream()">Start Detection</button>
+            <button onclick="stopStream()">Stop Detection</button>
+            <button onclick="selectAndUpload()">Upload Video</button>
+                <input
+                  type="file"
+                  id="videoFile"
+                  accept="video/*"
+                  style="display: none"
+                  onchange="uploadFile()"
+                />
+          </button>
+            <button>
+              <a
+                style="text-decoration: none; color: white"
+                href="violator-image/"
+                target="_blank"
+              >
+                Show Violator</a
+              >
+            </button>
+            <button>
+              <a
+                style="text-decoration: none; color: white"
+                href="record/"
+                target="_blank"
+              >
+                Records</a
+              >
+            </button>
+            <button>
+              <a
+                style="text-decoration: none; color: white"
+                href="quiz/"
+                target="_blank"
+              >
+                Quiz</a
+              >
+            </button>
+            <button>
+              <a style="text-decoration: none; color: white"
+              href="violator-report/"
+              target="_blank">View Report</a>
+
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="snackbar">Violator detected</div>
+      <audio
+        id="notification-sound"
+        src="{% static 'mixkit-gaming-lock-2848.wav' %}"
+        preload="auto"
+      ></audio>
+    </div>
+</div>
+    
+    <script>
+      let cameraDeviceInput = document.getElementById('cameraDevice');  // Get the input element
+
+// Store the value when the user changes it
+cameraDeviceInput.addEventListener('input', function() {
+  const cameraDeviceValue = cameraDeviceInput.value;  // Get the value of the input
+  console.log(cameraDeviceValue);  // This will log the value each time it changes
+  // You can store or use this value as needed
+});
+      let videoSocket;
+      let videoChunks = [];
+      const CHUNK_SIZE = 1024 * 1024; // 1MB
+      const ws = new WebSocket('ws://' + window.location.host + '/ws/upload_video/');
+      
+      // Handle WebSocket messages (e.g., frames, analytics data)
+      ws.onmessage = function (e) {
+        try {
+          const message = JSON.parse(e.data); // Parse the incoming JSON message
+          
+          // Update video frame
+          const imgElement = document.getElementById('video-frame');
+          imgElement.src = 'data:image/jpeg;base64,' + message.frame;
+      
+          // Update results and analytics
+          updateResults(message.results);
+          updateAnalytics(message.results.analytics);
+          updateSafetyIndex(message.results.safety_index);
+      
+        } catch (error) {
+          console.error('Error parsing message:', error);
+        }
+      };
+      
+      // Handle WebSocket connection close
+      ws.onclose = function (e) {
+        console.error('Video socket closed unexpectedly');
+        // Reset WebSocket connection if necessary
+        ws = null;
+      };
+      
+      // Handle WebSocket errors
+      ws.onerror = function (error) {
+        console.error('WebSocket Error:', error);
+      };
+      
+      // Open WebSocket connection
+      ws.onopen = function () {
+        console.log('WebSocket connection established.');
+      };
+      
+      // Trigger file input click
+      function selectAndUpload() {
+        document.getElementById('videoFile').click();
+      }
+      
+      // Handle file selection and chunking
+      function uploadFile() {
+        const fileInput = document.getElementById('videoFile');
+        const file = fileInput.files[0];
+      
+        if (file) {
+          console.log('File selected:', file);
+      
+          const fileName = file.name;
+          let startByte = 0;
+          let endByte = CHUNK_SIZE;
+          const reader = new FileReader();
+      
+          // Function to send metadata and binary chunk separately
+          function sendChunk(chunkIndex, chunkData) {
+            // Send metadata (text-based message)
+            const chunkMetadata = {
+              type: 'video_chunk',
+              file_name: fileName,
+              chunk_index: chunkIndex,
+              total_chunks: Math.ceil(file.size / CHUNK_SIZE),
+            };
+            ws.send(JSON.stringify(chunkMetadata)); // Send metadata
+      
+            // Send binary chunk (binary message)
+            ws.send(chunkData); // Send the chunk as binary data
+          }
+      
+          reader.onload = function (e) {
+            const chunkData = e.target.result;
+            videoChunks.push(chunkData); // Store the chunk
+      
+            console.log('Stored chunk:', chunkData);
+      
+            // Send the chunk (metadata + chunk data)
+            sendChunk(videoChunks.length - 1, chunkData);
+      
+            // Read the next chunk if any
+            startByte = endByte;
+            endByte = Math.min(startByte + CHUNK_SIZE, file.size);
+      
+            if (startByte < file.size) {
+              const blob = file.slice(startByte, endByte);
+              reader.readAsArrayBuffer(blob); // Read the next chunk
+            } else {
+              console.log('All chunks read and sent');
+            }
+          };
+      
+          // Start reading the first chunk
+          const blob = file.slice(startByte, endByte);
+          reader.readAsArrayBuffer(blob); // Start reading the first chunk
+        } else {
+          alert('No file selected');
+        }
+      }
+      
+      // Function to send all chunks over WebSocket (if needed, for some use case)
+      function sendChunksToWebSocket(fileName) {
+        videoChunks.forEach((chunk, index) => {
+          const metadata = {
+            type: 'video_chunk',
+            file_name: fileName,
+            chunk_index: index,
+            total_chunks: videoChunks.length,
+          };
+      
+          // Send metadata as text (JSON) and binary chunk separately
+         // Send metadata as a text (JSON) message
+          ws.send(JSON.stringify(metadata));
+ 
+             // Send the binary chunk after a short delay to ensure order
+           setTimeout(() => {
+             const binaryChunk = new Blob([chunk]);
+             ws.send(binaryChunk);  // Send the binary chunk
+           }, 50);  // Adjust this timeout if necessary
+             });
+           
+        console.log('All chunks sent');
+      }
+
+function startStream() {
+    if (videoSocket) {
+        console.error('Video stream is already running.');
+        return;
+    }
+    const cameraDeviceValue = cameraDeviceInput.value;
+    videoSocket = new WebSocket('ws://' + window.location.host + '/ws/video_feed/'+cameraDeviceValue+'/');
+
+    videoSocket.onmessage = function(e) {
+        try {
+            const message = JSON.parse(e.data); // Parse the incoming JSON message
+            
+            // Update video frame
+            const imgElement = document.getElementById('video-frame');
+            imgElement.src = 'data:image/jpeg;base64,' + message.frame;
+
+            // Update text areas
+            updateResults(message.results); // Update results with the new structure
+            updateAnalytics(message.results.analytics);  // Now passing the results object directly
+            updateSafetyIndex(message.results.safety_index); // Accessing the safety index directly from results
+
+        } catch (error) {
+            console.error('Error parsing message: ', error);
+        }
+    };
+
+    videoSocket.onclose = function(e) {
+        console.error('Video socket closed unexpectedly');
+        videoSocket = null; // Reset videoSocket on close
+    };
+
+    videoSocket.onerror = function(error) {
+        console.error('WebSocket Error: ', error);
+    };
+}
+
+// Function to update results in the results textarea
+function updateResults(results) {
+    const resultsTextArea = document.getElementById('results');
+    if (results && results.person_results) {
+        resultsTextArea.value = results.person_results.join('\n'); // Join individual results with new lines
+    } else {
+        resultsTextArea.value = 'No results available'; // Handle case where results are undefined
+    }
+}
+
+// Function to update compliance data
+function updateCompliances(compliances) {
+    const compliancesTextArea = document.getElementById('compliances');
+    if (compliances) {
+        compliancesTextArea.value = compliances.join('\n'); // Join compliance items with new lines
+    } else {
+        compliancesTextArea.value = 'No compliance data available'; // Handle case where compliances are undefined
+    }
+}
+
+// Function to update analytics data
+function updateAnalytics(analytics) {
+    const analyticsTextArea = document.getElementById('analytics');
+    if (analytics) {
+      analyticsTextArea.value = analytics; // Join individual results with new lines
+      console.log(analytics);
+    } else {
+      analyticsTextArea.value = 'No analytics available'; // Handle case where results are undefined
+    }
+    console.log(analytics);
+
+    // Check if analytics is defined and has adhering/violating properties
+   // const adhering = analytics.adhering !== undefined ? analytics.adhering : 0; // Default to 0 if undefined
+    //const violating = analytics.violating !== undefined ? analytics.violating : 0; // Default to 0 if undefined
+
+}
+
+// Function to update safety index
+function updateSafetyIndex(safetyIndex) {
+    const safetyIndexTextArea = document.getElementById('safety-index');
+
+    // Check if safetyIndex is defined
+    if (safetyIndex !== undefined) {
+        safetyIndexTextArea.value = `${safetyIndex}%`; // Format the safety index as a percentage
+    } else {
+        safetyIndexTextArea.value = 'Safety Index: N/A'; // Show N/A if not available
+    }
+}
+
+// Optionally, you might want to add a stopStream function
+function stopStream() {
+    if (videoSocket) {
+        videoSocket.close();
+        videoSocket = null; // Reset videoSocket after closing
+    }
+}
+
+// Attach the startStream function to the button
+document.getElementById('startButton').onclick = startStream;
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+//
+//
+document.getElementById('submit-compliance').addEventListener('click', function() {
+        // Get all the checkboxes
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        const selectedCompliances = [];
+
+        // Loop through the checkboxes to find the selected ones
+        checkboxes.forEach(function(checkbox) {
+          if (checkbox.checked) {
+            selectedCompliances.push(checkbox.value); // Push selected values into the array
+          }
+        });
+
+        // Create a JSON object with selected compliances
+        const complianceData = {
+          compliances: selectedCompliances
+        };
+
+        // Send the data to a server using fetch
+        fetch('/app/video_feed/select-compliances/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken // Include the CSRF token here
+              },
+              body: JSON.stringify(complianceData) // Send the compliance data as JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Success:', data);
+              // Optionally, display a success message
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              // Optionally, display an error message
+
+        });
+      });
+      ////////////////////////////////////////////
+
+      // Toggle dropdown visibility on button click
+      document.querySelector('.dropdown-btn').addEventListener('click', function () {
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function (e) {
+            if (!e.target.matches('.dropdown-btn') && !e.target.matches('.form-check-input') && !e.target.matches('.form-check-label')) {
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                dropdownMenu.style.display = 'none';
+            }
+        });
+                
+    </script>
+</body>
+</html>
